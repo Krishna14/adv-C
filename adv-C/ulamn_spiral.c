@@ -1,6 +1,6 @@
 /*
 *DESCRIPTION: Its just a fun program to be used as an exercise. The program
-*takes in input the length of an n x n array. Then it fills this square
+*takes in input the length of an n x n bufrefay. Then it fills this square
 *according to the option provided.
 *
 *LOGIC: Fill the buffer. Display the buffer. For the horizontal and vertical
@@ -24,7 +24,7 @@ void buf_loct(int n, int ***bufref)
 {
 	*bufref = (int**)malloc(n*sizeof(int *));
 	if((*bufref) == 0)
-		end_exit("Wrong Allocation of memory, Exiting");
+		exit(0);
 	else
 	{
 		int i = 0;
@@ -36,21 +36,29 @@ void buf_loct(int n, int ***bufref)
 	}	
 }	
 
-void end_exit(char *arg)
+void buf_free(int n,int ***buf)
 {
-	
-	printf(arg[]);
-	exit(0);
+	int i=0;
+	while(i<n)
+	{
+		free((*buf)[i]);
+		i++;
+	}
+	*buf = NULL;
+	x=0;
+	y=0;
+	spiral_counter = 1;
+	return;
 }
 
-void ulamn_spiral(int arr[][10],int n)
+void ulamn_spiral(int n,int **bufref)
 {
 	if(n<=0)
 		return;
 	else
 		if(n==1)
 		{
-			arr[x][y] = spiral_counter++;
+			bufref[x][y] = spiral_counter++;
 			return;
 		}
 		else
@@ -58,23 +66,39 @@ void ulamn_spiral(int arr[][10],int n)
 			int loc_x = x;
 			int loc_y = y;
 			for(;y<n+loc_y;y++)//TL to TR
-				arr[x][y] = spiral_counter++;
+				bufref[x][y] = spiral_counter++;
 			for(x=x+1,y=y-1;x<n+loc_x;x++)//TR to BR
-				arr[x][y] = spiral_counter++;
+				bufref[x][y] = spiral_counter++;
 			for(x=x-1,y=y-1;y>=loc_y;y--)//BR to BL
-				arr[x][y] = spiral_counter++;
+				bufref[x][y] = spiral_counter++;
 			for(y=y+1,x=x-1;((x>loc_x) && (4*(n-1)));x--)//BL to TL
-				arr[x][y] = spiral_counter++;
+				bufref[x][y] = spiral_counter++;
 
 			x++;
 			y++;
-			ulamn_spiral(arr,n-2);
+			ulamn_spiral(n-2,bufref);
 		}
 }
 int main()
 {
-	int n;
+	int n,i,j;
 	printf("Please enter the number ");
 	scanf("%d",&n);
-	
+	if(n<=0)
+	{
+		printf("Please enter a valid number");
+		exit(0);
+	}
+	int **buf = NULL;
+	buf_loct(n,&buf);
+	ulamn_spiral(n,buf);
+	for(i=0;i<n;i++)
+	{	for(j=0;j<n;j++)
+		{
+			printf("%d\t",buf[i][j]);
+		}
+		printf("\n");
+	}
+	buf_free(n,&buf);
+	return 0;
 }
